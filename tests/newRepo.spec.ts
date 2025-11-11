@@ -37,5 +37,24 @@ test.describe('New Repository Form Tests', () => {
         await expect(newRepositoryPage.repositoryDescriptionField).toHaveValue(repoDescription)
     })
 
-    
+    test('Create repository with existing name', async () => {
+        await newRepositoryPage.createNewRepository(UserData.REPOSITORY_NAME)
+        await expect(newRepositoryPage.repositoryNameError).toBeVisible()
+    })
+
+    test('Create Repository with empty name', async () => {
+        await newRepositoryPage.createNewRepository('')
+        await newRepositoryPage.checkEmptyErrorMessage(newRepositoryPage.repositoryNameField)
+    })
+
+    test('Create Repository with Issue Labels', async ({ page }) => {
+        const repoName = faker.lorem.word({ length: 11 })
+        await newRepositoryPage.repositoryIssuesLabelField.click()
+        await newRepositoryPage.repositoryIssuesAdvancedLabels.click()
+        /*await newRepositoryPage.createNewRepository(repoName)
+        expect (page.url()).toContain(`/${UserData.USERNAME}/${repoName}`)
+        await newRepositoryPage.goToIssuesTab()
+        await newRepositoryPage.labelsDropdown.click()
+        await expect(newRepositoryPage.labelsDropdown).toBeEnabled()*/
+    })
 })

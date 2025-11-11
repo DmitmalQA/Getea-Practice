@@ -34,8 +34,7 @@ test.describe('Register Page Tests', () => {
         const password = faker.internet.password({ length: 10 })
 
         await registerPage.register('', randomEmail,  password, password);
-        await expect(registerPage.userNameField).toHaveJSProperty('validity.valueMissing', true)
-        await expect(registerPage.userNameField).toHaveJSProperty('validationMessage', RegisterMessages.EMAIL_EMPTY_MESSAGE)
+        await registerPage.checkEmptyErrorMessage(registerPage.userNameField)
         expect(url).toContain(registerPage.url)
     })
 
@@ -43,8 +42,7 @@ test.describe('Register Page Tests', () => {
         const password = faker.internet.password({ length: 10 })
 
         await registerPage.register(faker.internet.username(), '',  password, password);
-        await expect(registerPage.emailField).toHaveJSProperty('validity.valueMissing', true)
-        await expect(registerPage.emailField).toHaveJSProperty('validationMessage', RegisterMessages.EMAIL_EMPTY_MESSAGE)
+        await registerPage.checkEmptyErrorMessage(registerPage.emailField)
         expect(url).toContain(registerPage.url)
     })
 
@@ -60,16 +58,14 @@ test.describe('Register Page Tests', () => {
     test('Password is empty', async ({ }) => {
 
         await registerPage.register(faker.internet.username(), `dmitmal+${Date.now()}@qamadness.com`,  '', '');
-        await expect(registerPage.passwordField).toHaveJSProperty('validity.valueMissing', true)
-        await expect(registerPage.passwordField).toHaveJSProperty('validationMessage', RegisterMessages.EMAIL_EMPTY_MESSAGE)
+        await registerPage.checkEmptyErrorMessage(registerPage.passwordField)
         expect(url).toContain(registerPage.url)
     })
 
     test('Confirm Password is empty', async ({ }) => {
         const password = faker.internet.password({ length: 10 })
         await registerPage.register(faker.internet.username(), `dmitmal+${Date.now()}@qamadness.com`,  password, '');
-        await expect(registerPage.confirmPasswordField).toHaveJSProperty('validity.valueMissing', true)
-        await expect(registerPage.confirmPasswordField).toHaveJSProperty('validationMessage', RegisterMessages.EMAIL_EMPTY_MESSAGE)
+        await registerPage.checkEmptyErrorMessage(registerPage.confirmPasswordField)
         expect(url).toContain(registerPage.url)
     })
 

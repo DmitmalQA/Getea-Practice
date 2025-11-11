@@ -1,5 +1,6 @@
-import { Locator } from "@playwright/test";
+import { expect, Locator } from "@playwright/test";
 import BasePage from "./BasePage";
+import { RegisterMessages } from "../test-data/messages/register-messages";
 
 export default class RegisterPage extends BasePage {
     public url: string = '/user/sign_up'
