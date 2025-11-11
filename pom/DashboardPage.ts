@@ -12,6 +12,8 @@ export default class DashboardPage extends BasePage {
     public userMenu: Locator = this.page.locator('.user-menu')
     public logoutNavBar: Locator = this.page.locator('.navbar-right')
     public createRepo: Locator = this.page.locator('a[data-tooltip-content="New Repository"]')
+    public searchField: Locator = this.page.locator('input[type="search"]')
+    public logoButton: Locator = this.page.locator('a#navbar-logo')
 
 
     async logout(){
@@ -22,5 +24,9 @@ export default class DashboardPage extends BasePage {
 
     async createNewRepositoryTransition(){
         await this.createRepo.click()
+    }
+
+    async goToDashBoard(){
+        await this.logoButton.click()
     }
 }
