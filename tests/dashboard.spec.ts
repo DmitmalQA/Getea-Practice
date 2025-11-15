@@ -3,7 +3,7 @@ import DashboardPage from '../pom/DashboardPage';
 import RegisterPage from '../pom/registerPage.ts';
 import LoginPage from '../pom/LoginPage.ts';
 import { faker } from '@faker-js/faker';
-import NewRepositoryPage from '../pom/NewRepository.ts';
+import NewRepositoryPage from '../pom/NewRepositoryPage.ts';
 
 test.describe('Dashboard Page Tests', () => {
 
@@ -46,11 +46,20 @@ test.describe('Dashboard Page Tests', () => {
     })
 
     test('Search Repository from existing', async () => {
-        const repoName = faker.lorem.sentence(2)
-        await dashboardPage.createNewRepositoryTransition()
-        await newRepositoryPage.createNewRepository(repoName)
-        await dashboardPage.goToDashBoard()
+        const repoName = await dashboardPage.createSingularRepository(newRepositoryPage)
         await dashboardPage.searchField.fill(repoName)
+        await expect(dashboardPage.firstSearchResult).toContainText(repoName)
     })
 
+    test('Go to repository from the list', async ({ page }) => {
+        const repoName = await dashboardPage.createSingularRepository(newRepositoryPage)
+        await dashboardPage.searchField.fill(repoName)
+        await dashboardPage.goToDetectedRepo()
+        expect(page.url()).toContain(repoName)
+    })
+
+    test('Change the pages of repository list', async() => {
+        await dashboardPage.createManyRepositories(17, newRepositoryPage)
+        await dashboardPage.checkWorkingPagination()
+    })
 })

@@ -1,6 +1,5 @@
 import BasePage from "./BasePage";
-import { expect, Locator } from "@playwright/test";
-import { RegisterMessages } from "../test-data/messages/register-messages";
+import { Locator } from "@playwright/test";
 
 export default class NewRepositoryPage extends BasePage {
     public url: string = '/repo/create'
@@ -35,6 +34,4 @@ export default class NewRepositoryPage extends BasePage {
     async goToIssuesTab(){
         await this.issuesTab.click()
     }
-
-
 }

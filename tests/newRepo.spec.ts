@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test';
 import DashboardPage from '../pom/DashboardPage';
 import LoginPage from '../pom/LoginPage.ts';
-import NewRepositoryPage from '../pom/NewRepository.ts';
+import NewRepositoryPage from '../pom/NewRepositoryPage.ts';
 import { faker } from '@faker-js/faker';
 import RegisterPage from '../pom/registerPage.ts';
 
@@ -32,7 +32,7 @@ test.describe('New Repository Form Tests', () => {
     })
 
     test('Create a default empty repository', async({ page }) => {
-        const repoName = faker.lorem.word({ length: 10 })
+        const repoName = "AQA-Test-"+faker.lorem.word()
         await newRepositoryPage.createNewRepository(repoName)
         expect (page.url()).toContain(`/${userName}/${repoName}`)
         await newRepositoryPage.goToSettingsTab()
@@ -40,7 +40,7 @@ test.describe('New Repository Form Tests', () => {
     })
 
     test('Create a repository with optional description', async({ page }) => {
-        const repoName = faker.lorem.word({ length: 10 })
+        const repoName = "AQA-Test-"+faker.lorem.word()
         const repoDescription = faker.lorem.sentence(15)
         await newRepositoryPage.createNewRepositoryWithDescription(repoName, repoDescription)
         expect (page.url()).toContain(`/${userName}/${repoName}`)
@@ -50,7 +50,7 @@ test.describe('New Repository Form Tests', () => {
     })
 
     test('Create repository with existing name', async () => {
-        const repoName = faker.lorem.sentence(2)
+        const repoName = "AQA-Test-"+faker.lorem.word()
         await newRepositoryPage.createNewRepository(repoName)
         await dashboardPage.goToDashBoard()
         await dashboardPage.createNewRepositoryTransition()
@@ -64,7 +64,7 @@ test.describe('New Repository Form Tests', () => {
     })
 
     test('Create Repository with Issue Labels', async ({ page }) => {
-        const repoName = faker.lorem.word({ length: 12 })
+        const repoName = "AQA-Test-"+faker.lorem.word()
         await newRepositoryPage.repositoryIssuesLabelField.click()
         await newRepositoryPage.repositoryIssuesAdvancedLabels.click()
         await newRepositoryPage.createNewRepository(repoName)
