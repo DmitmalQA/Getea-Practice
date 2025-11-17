@@ -23,6 +23,7 @@ export default class BasePage {
 
     async checkEmptyErrorMessage(locator: Locator){
         await expect(locator).toHaveJSProperty('validity.valueMissing', true)
-        await expect(locator).toHaveJSProperty('validationMessage', RegisterMessages.EMAIL_EMPTY_MESSAGE)
+        const validationMessage = await locator.evaluate((el: HTMLInputElement) => el.validationMessage)
+        await expect(validationMessage).toMatch(/Please fill (in|out) this field\./)
     }
 }
