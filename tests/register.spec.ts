@@ -1,25 +1,11 @@
-import { test, expect } from '@playwright/test';
+import { test, expect } from '../utils/fixtures/pages.ts';
 import { faker } from '@faker-js/faker';
 import { RegisterMessages } from '../test-data/messages/register-messages.ts';
-
-import DashboardPage from '../pom/DashboardPage';
-import RegisterPage  from '../pom/registerPage';
 
 
 test.describe('Register Page Tests', () => {
 
-    let registerPage: RegisterPage;
-    let dashboardPage: DashboardPage;
-    let url: string
-
-    test.beforeEach(async ({ page }) => {
-        registerPage = new RegisterPage(page);
-        dashboardPage = new DashboardPage(page);
-        await registerPage.navigateTo();
-        url = page.url()
-    })
-
-    test('Successful Register', async () => {
+    test('Successful Register', async ({registerPage, dashboardPage}) => {
         const randomUserName = faker.internet.username()
         const randomEmail = `dmitmal+${Date.now()}@qamadness.com`
         const password = faker.internet.password({ length: 10 })
@@ -29,50 +15,50 @@ test.describe('Register Page Tests', () => {
         await expect(dashboardPage.navBarUserName).toHaveText(randomUserName);
     })
 
-    test('Username is empty', async ({ }) => {
+    test('Username is empty', async ({ registerPage }) => {
         const randomEmail = `dmitmal+${Date.now()}@qamadness.com`
         const password = faker.internet.password({ length: 10 })
 
         await registerPage.register('', randomEmail,  password, password);
         await registerPage.checkEmptyErrorMessage(registerPage.userNameField)
-        expect(url).toContain(registerPage.url)
+        expect(registerPage.url).toContain("/sign_up")
     })
 
-    test('Email is empty', async ({ }) => {
+    test('Email is empty', async ({ registerPage }) => {
         const password = faker.internet.password({ length: 10 })
 
         await registerPage.register(faker.internet.username(), '',  password, password);
         await registerPage.checkEmptyErrorMessage(registerPage.emailField)
-        expect(url).toContain(registerPage.url)
+        expect(registerPage.url).toContain("/sign_up")
     })
 
-    test('Email format is incorrect', async ({ }) => {
+    test('Email format is incorrect', async ({ registerPage }) => {
         const password = faker.internet.password({ length: 10 })
 
         await registerPage.register(faker.internet.username(), 'dmitmalqamadness.com',  password, password);
         await expect(registerPage.emailField).toHaveJSProperty('validity.typeMismatch', true)
         await expect(registerPage.emailField).toHaveJSProperty('validationMessage', RegisterMessages.EMAIL_INCORRECT_FORMAT_MESSAGE)
-        expect(url).toContain(registerPage.url)
+        expect(registerPage.url).toContain("/sign_up")
     })
 
-    test('Password is empty', async ({ }) => {
+    test('Password is empty', async ({ registerPage }) => {
 
         await registerPage.register(faker.internet.username(), `dmitmal+${Date.now()}@qamadness.com`,  '', '');
         await registerPage.checkEmptyErrorMessage(registerPage.passwordField)
-        expect(url).toContain(registerPage.url)
+        expect(registerPage.url).toContain("/sign_up")
     })
 
-    test('Confirm Password is empty', async ({ }) => {
+    test('Confirm Password is empty', async ({ registerPage }) => {
         const password = faker.internet.password({ length: 10 })
         await registerPage.register(faker.internet.username(), `dmitmal+${Date.now()}@qamadness.com`,  password, '');
         await registerPage.checkEmptyErrorMessage(registerPage.confirmPasswordField)
-        expect(url).toContain(registerPage.url)
+        expect(registerPage.url).toContain("/sign_up")
     })
 
-    test("Passwords don't match", async ({ }) => {
+    test("Passwords don't match", async ({ registerPage }) => {
         const password = faker.internet.password({ length: 10 })
         await registerPage.register(faker.internet.username(), `dmitmal+${Date.now()}@qamadness.com`,  password, password + '1');
         await expect(registerPage.passwordsDoNotMatchMessage).toBeVisible();
-        expect(url).toContain(registerPage.url)
+        expect(registerPage.url).toContain("/sign_up")
     });
 })

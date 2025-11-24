@@ -1,63 +1,44 @@
-import { test, expect } from '@playwright/test';
-import DashboardPage from '../pom/DashboardPage';
-import RegisterPage from '../pom/registerPage.ts';
-import LoginPage from '../pom/LoginPage.ts';
+import { test, expect } from '../utils/fixtures/app.ts';
 import { faker } from '@faker-js/faker';
-import NewOrganisationPage from '../pom/NewOrganisationPage.ts';
+import * as userData from "../test-data/users/testUser1.json"
 
 test.describe('New Organisation Page Tests', () => {
 
-    let dashboardPage: DashboardPage
-    let loginPage: LoginPage
-    let newOrganisationPage: NewOrganisationPage
-    let registerPage: RegisterPage
-    const userName = faker.internet.username()
-    const password = faker.internet.password({ length: 10 })
-    const userEmail = `dmitmal+${Date.now()}@qamadness.com`
+    const userName = userData.userName
+    const password = userData.userPassword
 
-    test.beforeAll(async ({ browser }) => {
-        const page = await browser.newPage()
-        registerPage = new RegisterPage(page)
-        await registerPage.navigateTo()
-        await registerPage.register(userName, userEmail, password, password)
-        await page.close()
+    test.beforeEach(async ({ app }) => {
+        await app.dashboardPage.goToLoginPage();
+        await app.loginPage.login(userName, password)
+        await app.dashboardPage.createNewOrganisationTransition()
     })
 
-    test.beforeEach(async ({ page }) => {
-        dashboardPage = new DashboardPage(page)
-        loginPage = new LoginPage(page)
-        newOrganisationPage = new NewOrganisationPage(page)
-        await dashboardPage.goToLoginPage();
-        await loginPage.login(userName, password)
-        await dashboardPage.createNewOrganisationTransition()
+    test('Create Organisation with Standard Parameters', async({ app }) => {
+        await app.newOrganisationPage.createPublicOrgAssigned()
+        await app.newOrganisationPage.checkVisibility("public")
     })
 
-    test('Create Organisation with Standard Parameters', async() => {
-        await newOrganisationPage.createPublicOrgAssigned()
-        await newOrganisationPage.checkVisibility("public")
+    test('Create a Limited Organisation', async({ app }) => {
+        await app.newOrganisationPage.createLimitedOrgAssigned()
+        await app.newOrganisationPage.checkVisibility("limited")
     })
 
-    test('Create a Limited Organisation', async() => {
-        await newOrganisationPage.createLimitedOrgAssigned()
-        await newOrganisationPage.checkVisibility("limited")
+    test('Create a Private Organisation', async({ app }) => {
+        await app.newOrganisationPage.createPrivateOrgAssigned()
+        await app.newOrganisationPage.checkVisibility("private")
     })
 
-    test('Create a Private Organisation', async() => {
-        await newOrganisationPage.createPrivateOrgAssigned()
-        await newOrganisationPage.checkVisibility("private")
+    test('Create an Organisation without Permissions', async({ app }) => {
+        await app.newOrganisationPage.createPublicOrgWithoutPermissionsAssigned()
+        await app.newOrganisationPage.checkPermissions("disabled")
     })
 
-    test('Create an Organisation without Permissions', async() => {
-        await newOrganisationPage.createPublicOrgWithoutPermissionsAssigned()
-        await newOrganisationPage.checkPermissions("disabled")
-    })
-
-    test('Create Organisation with already Existing Name', async() => {
+    test('Create Organisation with already Existing Name', async({ app }) => {
         const repoName = "AQA-Test-"+faker.lorem.word()
-        await newOrganisationPage.createSpecificOrg(repoName)
-        await dashboardPage.goToDashBoard()
-        await dashboardPage.createNewOrganisationTransition()
-        await newOrganisationPage.createSpecificOrg(repoName)
-        await expect(newOrganisationPage.errorMessage).toContainText(/already taken/)
+        await app.newOrganisationPage.createSpecificOrg(repoName)
+        await app.dashboardPage.goToDashBoard()
+        await app.dashboardPage.createNewOrganisationTransition()
+        await app.newOrganisationPage.createSpecificOrg(repoName)
+        await expect(app.newOrganisationPage.errorMessage).toContainText(/already taken/)
     })
 })

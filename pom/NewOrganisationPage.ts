@@ -20,7 +20,7 @@ export default class NewOrganisationPage extends BasePage {
     public errorMessage: Locator = this.page.locator('.flash-error')
 
     async createPublicOrgAssigned(){
-        let orgName = "AQA-TestOrg-"+faker.lorem.word()
+        let orgName = "AQA-TestOrg-"+faker.lorem.slug(3)
         await this.organisationNameField.fill(orgName)
         await this.createOrganisationButton.click()
         expect (this.page.url()).toContain(`/org/${orgName}`)
@@ -32,7 +32,7 @@ export default class NewOrganisationPage extends BasePage {
     }   
 
     async createPrivateOrgAssigned(){
-        let orgName = "AQA-TestOrg-"+faker.lorem.word()
+        let orgName = "AQA-TestOrg-"+faker.lorem.slug(3)
         await this.organisationNameField.fill(orgName)
         await this.privateOrgRadioButton.check()
         await this.createOrganisationButton.click()
@@ -40,7 +40,7 @@ export default class NewOrganisationPage extends BasePage {
     }
 
     async createLimitedOrgAssigned(){
-        let orgName = "AQA-TestOrg-"+faker.lorem.word()
+        let orgName = "AQA-TestOrg-"+faker.lorem.slug(3)
         await this.organisationNameField.fill(orgName)
         await this.limitedOrgRadioButton.check()
         await this.createOrganisationButton.click()
@@ -48,7 +48,7 @@ export default class NewOrganisationPage extends BasePage {
     }
 
     async createPublicOrgWithoutPermissionsAssigned(){
-        let orgName = "AQA-TestOrg-"+faker.lorem.word()
+        let orgName = "AQA-TestOrg-"+faker.lorem.slug(3)
         await this.organisationNameField.fill(orgName)
         if (await this.permissionsCheckbox.isChecked()){
             await this.permissionsCheckbox.uncheck()
